@@ -1,0 +1,6 @@
+{
+  "name": "Ehtisham Daily Check-Up Center",
+  "description": "A playful, romantic daily health inspection and cute check-up experience for Ehtisham.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
