@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
   CheckCircle, 
   Award, 
@@ -13,29 +13,90 @@ import {
   RotateCcw, 
   Copy, 
   Sparkles,
-  ClipboardCheck
+  ClipboardCheck,
+  FileText
 } from 'lucide-react';
 import { audio } from './AudioEngine';
+import { DailyReport } from '../types';
 
 interface FinalProps {
+  report: DailyReport;
   onRestart: () => void;
 }
 
-export default function FinalDiagnosis({ onRestart }: FinalProps) {
+export default function FinalDiagnosis({ report, onRestart }: FinalProps) {
   const [copied, setCopied] = useState(false);
   const [showCoupon, setShowCoupon] = useState(false);
 
-  const messageText = `Hey Abdul Rehman! 😊 My Ehtisham Daily Check-Up is complete! I am officially loved, missed, and required to send one smile. Here is my smile: 😁❤️ and I'm ready to claim my virtual hug! 🤗`;
+  // Smile mapping
+  const smileLabels: Record<string, string> = {
+    smiled_bright: 'Fully smiling! 😁',
+    blushed: 'Blushed! 🥰',
+    giggled: 'Giggled! 🤭',
+    waiting: 'Waiting for texts! 🥺'
+  };
+  const smilesText = smileLabels[report.smiled] || report.smiled;
 
-  const encodedMessage = encodeURIComponent(messageText);
+  // Sleep mapping
+  const sleepLabels: Record<string, string> = {
+    under_5: 'Under 5 hours 🥱',
+    '6_7': '6-7 hours (Decent) 😴',
+    '8_plus': '8+ hours (Healthy) ✨',
+    thinking_of_you: 'Thinking of you! 🦉',
+    not_checked: 'Not checked'
+  };
+  const sleepText = sleepLabels[report.sleepHours] || report.sleepHours;
+
+  const foodText = report.ate === 'nourished' ? 'Fed & Full! 🍔' : report.ate === 'skipped' ? 'Skipped! 🥺 (Eat now!)' : 'Unknown 🤨';
+  const waterText = `${report.waterCups}/8 Glasses 💧`;
+  const missedText = report.missedStatus === 'absolute' ? '1000% CONFIRMED! 😍' : 'Highly Likely ❤️';
+  
+  // Moisturizer mapping
+  const moisturizerLabels: Record<string, string> = {
+    applied_smooth: 'Silky baby skin! ✨',
+    desert_dry: 'Desert dry today 🌵',
+    abdul_rehman_will_apply: 'Abdul Rehman will apply! 🥰',
+    not_yet: 'No, forgot 🥺'
+  };
+  const moisturizerText = moisturizerLabels[report.appliedMoisturizer] || 'Not checked';
+
+  // Killer eyes mapping
+  const eyeLabels: Record<string, string> = {
+    zero: '0, kept closed 🙈',
+    few_innocent: '1-10 innocent people 💀',
+    overwhelming: 'Entire army of fans 💅',
+    only_abdul_rehman: 'Only Abdul Rehman (Died of cuteness) ❤️💀'
+  };
+  const eyesText = eyeLabels[report.eyeCasualties] || 'Not checked';
+
+  const reportString = `📊 DAILY CHECK-UP STATUS 📊
+----------------------------------
+👨‍⚕️ Subject: Ehtisham Cutie ❤️
+📅 Date: ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+
+✨ Smiled: ${smilesText}
+😴 Sleep: ${sleepText}
+🍔 Food: ${foodText}
+💧 Water: ${waterText}
+🥰 Missed Me: ${missedText}
+🧼 Moisturizer: ${moisturizerText}
+👀 Killer Eyes: ${eyesText}
+
+❓ Daily Question: "${report.dailyQuestionText}"
+👉 Answer: ${report.dailyQuestionAnswer || "No answer selected"}
+
+----------------------------------
+Love from Abdul Rehman 👨‍⚕️❤️`;
+
+  const encodedMessage = encodeURIComponent(reportString);
   // Prefilled WhatsApp URL
   const whatsappUrl = `https://api.whatsapp.com/send?text=${encodedMessage}`;
 
   const handleCopyToClipboard = () => {
     audio.play('click');
-    navigator.clipboard.writeText(messageText);
+    navigator.clipboard.writeText(reportString);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(() => setCopied(false), 2500);
   };
 
   const toggleCoupon = () => {
@@ -70,47 +131,14 @@ export default function FinalDiagnosis({ onRestart }: FinalProps) {
           </p>
         </div>
 
-        {/* Official Prescription Certificate Frame */}
-        <div 
-          className="my-8 border-4 border-double border-rose-200 bg-rose-50/25 p-6 rounded-2xl relative text-left space-y-6 shadow-inner" 
-          id="prescription-frame"
-        >
-          {/* Official Seal Watermark */}
-          <div className="absolute right-4 bottom-4 opacity-10 pointer-events-none select-none">
-            <Award className="w-24 h-24 text-rose-500 fill-rose-300" />
+        {/* Diagnostic Report Preview */}
+        <div className="mt-6 text-left" id="report-preview-block">
+          <div className="flex items-center gap-2 mb-2 text-slate-500 font-bold text-xs uppercase tracking-wider">
+            <FileText className="w-4 h-4 text-rose-500" />
+            <span>Generated Compact Inspection Report:</span>
           </div>
-
-          <div className="flex justify-between items-center border-b border-rose-100 pb-3" id="prescription-header">
-            <div>
-              <p className="text-[10px] font-black text-rose-500 uppercase">RX TREATMENT PLAN</p>
-              <h3 className="text-lg font-extrabold text-gray-800">Ehtisham Cuteness Care</h3>
-            </div>
-            <span className="text-[10px] text-gray-400 font-bold font-mono">No. 143-LOVE</span>
-          </div>
-
-          {/* Diagnosis Block */}
-          <div className="space-y-1" id="rx-diagnosis">
-            <h4 className="text-xs font-black text-gray-400 uppercase tracking-wider">DIAGNOSIS</h4>
-            <p className="text-gray-700 font-medium leading-relaxed" id="diagnosis-text">
-              You are officially <strong className="text-rose-600 font-extrabold underline decoration-rose-300">loved</strong>,{' '}
-              <strong className="text-pink-600 font-extrabold underline decoration-pink-300">missed</strong>, and{' '}
-              <strong className="text-gray-900 font-black">required to send one smile immediately</strong>.
-            </p>
-          </div>
-
-          {/* Penalty Block */}
-          <div className="space-y-1.5 border-t border-rose-100 pt-4" id="rx-penalty">
-            <h4 className="text-xs font-black text-red-500 uppercase tracking-wider flex items-center gap-1">
-              🚨 PENALTY FOR IGNORING
-            </h4>
-            <div className="bg-red-50/60 border border-red-100 rounded-xl p-3 text-red-800 text-xs font-bold leading-relaxed space-y-1">
-              <p className="flex items-center gap-1.5">
-                <span>🤗</span> 1 virtual hug (Non-negotiable)
-              </p>
-              <p className="flex items-center gap-1.5">
-                <span>❤️</span> 3 extra messages today
-              </p>
-            </div>
+          <div className="bg-slate-900 text-slate-100 font-mono text-[11px] p-5 rounded-2xl overflow-x-auto border border-slate-800 shadow-inner whitespace-pre-wrap leading-relaxed select-text" id="raw-report-preview">
+            {reportString}
           </div>
         </div>
 
@@ -121,11 +149,11 @@ export default function FinalDiagnosis({ onRestart }: FinalProps) {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => audio.play('success')}
-            className="cursor-pointer w-full bg-linear-to-r from-emerald-500 via-rose-500 to-pink-500 hover:opacity-95 text-white font-extrabold text-lg py-4 px-8 rounded-2xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+            className="cursor-pointer w-full bg-linear-to-r from-emerald-500 via-rose-500 to-pink-500 hover:opacity-95 text-white font-extrabold text-base py-4 px-8 rounded-2xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2"
             id="btn-send-smile"
           >
             <Send className="w-5.5 h-5.5 text-white animate-pulse" />
-            Send Smile To Abdul Rehman 😆
+            Send Daily Report on WhatsApp 🚀
           </a>
 
           {/* Supplementary Copier / Share Controls */}
@@ -138,12 +166,12 @@ export default function FinalDiagnosis({ onRestart }: FinalProps) {
               {copied ? (
                 <>
                   <ClipboardCheck className="w-3.5 h-3.5 text-emerald-500" />
-                  Smile Copied!
+                  Report Copied!
                 </>
               ) : (
                 <>
                   <Copy className="w-3.5 h-3.5 text-slate-400" />
-                  Copy Smile Text 📋
+                  Copy Report to Clipboard 📋
                 </>
               )}
             </button>

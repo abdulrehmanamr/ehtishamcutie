@@ -8,10 +8,11 @@ import { ShieldAlert, RefreshCw, Heart, Sparkles, Gamepad2 } from 'lucide-react'
 import { audio } from './AudioEngine';
 
 interface AlertProps {
+  missingYouText?: string;
   onProceed: () => void;
 }
 
-export default function EmergencyAlert({ onProceed }: AlertProps) {
+export default function EmergencyAlert({ missingYouText, onProceed }: AlertProps) {
   const [phase, setPhase] = useState<'intro' | 'investigating1' | 'investigating2' | 'reveal'>('intro');
 
   useEffect(() => {
@@ -115,7 +116,8 @@ export default function EmergencyAlert({ onProceed }: AlertProps) {
                 CHIEF INSPECTOR NOTES
               </div>
               <p className="text-sm text-gray-600 leading-relaxed text-left" id="letter-content">
-                My heart literally triggered this emergency broadcast alert because you've been away from my messages for too long, <strong>Ehtisham</strong>! 🥺 I miss you so much and hope this cute little check-up center makes you smile immediately.
+                <strong>Dearest Ehtisham:</strong> <br />
+                {missingYouText || `My heart literally triggered this emergency broadcast alert because you've been away from my messages for too long! 🥺 I miss you so much and hope this cute little check-up center makes you smile immediately.`}
               </p>
               <div className="mt-4 flex items-center justify-between text-[11px] text-rose-500 font-bold border-t border-rose-50 pt-3" id="letter-footer">
                 <span className="flex items-center gap-1">

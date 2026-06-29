@@ -11,6 +11,19 @@ export type AppStep =
   | 'GAME'
   | 'FINAL';
 
+export interface DailyReport {
+  smiled: string; // 'smiled_bright' | 'blushed' | 'giggled' | 'waiting' | ''
+  ate: 'unknown' | 'nourished' | 'skipped';
+  waterCups: number;
+  sleepHours: string; // 'under_5' | '6_7' | '8_plus' | 'thinking_of_you' | ''
+  missedStatus: 'likely' | 'absolute';
+  appliedMoisturizer: string; // 'applied_smooth' | 'desert_dry' | 'abdul_rehman_will_apply' | 'not_yet' | ''
+  eyeCasualties: string; // 'zero' | 'few_innocent' | 'overwhelming' | 'only_abdul_rehman' | ''
+  dailyQuestionAnswer: string;
+  dailyQuestionText: string;
+  missingYouText: string;
+}
+
 export interface InspectionItem {
   id: string;
   label: string;

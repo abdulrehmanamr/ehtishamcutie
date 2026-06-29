@@ -9,7 +9,7 @@ import { FloatingHeart } from '../types';
 import { audio } from './AudioEngine';
 
 interface GameProps {
-  onGameComplete: () => void;
+  onGameComplete: (score: number) => void;
 }
 
 interface FloatIndicator {
@@ -306,7 +306,7 @@ export default function HeartGame({ onGameComplete }: GameProps) {
             <button
               onClick={() => {
                 audio.play('success');
-                onGameComplete();
+                onGameComplete(score);
               }}
               className="cursor-pointer bg-linear-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-extrabold text-lg py-3 px-8 rounded-xl shadow-md transition-all hover:scale-105 inline-flex items-center gap-2"
               id="btn-claim-report"

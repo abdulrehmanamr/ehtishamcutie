@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import { Heart, Stethoscope, Sparkles } from 'lucide-react';
-import { AppStep } from './types';
+import { AppStep, DailyReport } from './types';
 import InspectionDashboard from './components/InspectionDashboard';
 import CutenessScanner from './components/CutenessScanner';
 import LoveQuiz from './components/LoveQuiz';
@@ -15,6 +15,143 @@ import FinalDiagnosis from './components/FinalDiagnosis';
 
 export default function App() {
   const [step, setStep] = useState<AppStep>('LANDING');
+
+  // Daily Questions Pool
+  const dailyQuestionsPool = [
+    {
+      question: "Which pick-up line describes your beauty right now? ✨",
+      options: [
+        { key: "magician", label: "Are you a magician? Because when I look at you, everyone else disappears! 🎩" },
+        { key: "fine_ticket", label: "Are you a parking ticket? Because you've got FINE written all over you! 👮‍♂️" },
+        { key: "star", label: "Are you a star? Because you light up my entire universe! 🌌" }
+      ]
+    },
+    {
+      question: "If Abdul Rehman hugs you for 10 consecutive minutes, you will: 🤗",
+      options: [
+        { key: "demand_more", label: "Demand another 10 minutes immediately! 🥰" },
+        { key: "strawberry", label: "Blush like a ripe red strawberry 🍓" },
+        { key: "never_release", label: "Lock arms and never let go of him ❤️" }
+      ]
+    },
+    {
+      question: "What is your official cuteness offense of the day? 🚨",
+      options: [
+        { key: "illegal_theft", label: "Stealing Abdul Rehman's heartbeat without a permit! 💖" },
+        { key: "excessive_handsome", label: "Being illegally handsome right after waking up 🥱" },
+        { key: "smile_weapon", label: "Using that gorgeous smile as a weapon of mass distraction 😆" }
+      ]
+    },
+    {
+      question: "What is your heart's current status for Abdul Rehman? ❤️",
+      options: [
+        { key: "infinite_love", label: "Beating entirely for him 💓" },
+        { key: "need_attention", label: "Urgently requiring his sweet messages and attention! 🥺" },
+        { key: "forever_connected", label: "Locked in a telepathic snuggle loop forever 🔗" }
+      ]
+    },
+    {
+      question: "If Abdul Rehman gives you a sweet forehead kiss, you will: 💋",
+      options: [
+        { key: "melt", label: "Melt completely like warm chocolate 🍫" },
+        { key: "demand", label: "Demand another one immediately! 🥰" },
+        { key: "hold_closer", label: "Smile and hold him even closer ❤️" }
+      ]
+    },
+    {
+      question: "How does your beauty diagnose according to medical science? 🩺",
+      options: [
+        { key: "contagious", label: "Highly contagious, causing instant heartbeats 💓" },
+        { key: "gorgeous", label: "Illegally gorgeous with no known cure! 😍" },
+        { key: "prescription", label: "So cute it should be a prescription pill 💊" }
+      ]
+    },
+    {
+      question: "What is the official prescription for your beautiful smile today? 💊",
+      options: [
+        { key: "hugs", label: "100x virtual hugs and snuggles from Abdul Rehman 🤗" },
+        { key: "call", label: "A sweet voice call right before sleeping 📞" },
+        { key: "pamper", label: "Endless pampering and forehead kisses 💋" }
+      ]
+    },
+    {
+      question: "If you don't reply within 5 minutes, Abdul Rehman is allowed to: 👮‍♂️",
+      options: [
+        { key: "spam", label: "Send 10 love-spam notifications 📲" },
+        { key: "cuddles", label: "Initiate emergency cuddles protocol 🤗" },
+        { key: "pout", label: "Pout and demand a video call right away! 🥺" }
+      ]
+    },
+    {
+      question: "If my temperature is rising right now, it is because: 🤒",
+      options: [
+        { key: "fever", label: "Your hotness is causing a fever in my heart! ❤️" },
+        { key: "sickness", label: "I am diagnosed with extreme love-sickness 🧪" },
+        { key: "voice_notes", label: "I need 1000mg of your voice notes immediately! 📞" }
+      ]
+    },
+    {
+      question: "According to my stethoscope, your sweet heart is saying: 🩺",
+      options: [
+        { key: "lub_dub", label: "Lub-dub, I am crazy about Abdul Rehman! 💓" },
+        { key: "warning", label: "Beep-beep, warning: illegal levels of missing you! 🚨" },
+        { key: "thump", label: "Thump-thump, waiting for a tight snuggle! 🤗" }
+      ]
+    },
+    {
+      question: "My diagnostic result says my heart is suffering from: 📈",
+      options: [
+        { key: "deficiency", label: "Chronic cuddles deficiency 🥺" },
+        { key: "theft", label: "Acute heartbeats theft by Ehtisham ❤️" },
+        { key: "obsession", label: "Severe obsession with your smile! 🥰" }
+      ]
+    }
+  ];
+
+  const missingYouPhrases = [
+    "My heart literally did a backflip and is currently demanding your attention! 🥺",
+    "The love radar is exploding because Ehtisham isn't replying! I miss you so much! 😭💖",
+    "According to the laws of physics, I am falling for you harder and harder every single second! ❤️",
+    "My screen is bright, but my day is completely dark without your sweet messages! Come snuggling! 🥺"
+  ];
+
+  const getRandomElements = () => {
+    const randomQ = dailyQuestionsPool[Math.floor(Math.random() * dailyQuestionsPool.length)];
+    const randomM = missingYouPhrases[Math.floor(Math.random() * missingYouPhrases.length)];
+    return { randomQ, randomM };
+  };
+
+  const [initData, setInitData] = useState(() => getRandomElements());
+  const [report, setReport] = useState<DailyReport>({
+    smiled: '',
+    ate: 'unknown',
+    waterCups: 0,
+    sleepHours: '',
+    missedStatus: 'likely',
+    appliedMoisturizer: '',
+    eyeCasualties: '',
+    dailyQuestionAnswer: '',
+    dailyQuestionText: initData.randomQ.question,
+    missingYouText: initData.randomM,
+  });
+
+  const handleRestart = () => {
+    const freshData = getRandomElements();
+    setInitData(freshData);
+    setReport({
+      smiled: '',
+      ate: 'unknown',
+      waterCups: 0,
+      sleepHours: '',
+      missedStatus: 'likely',
+      appliedMoisturizer: '',
+      eyeCasualties: '',
+      dailyQuestionAnswer: '',
+      dailyQuestionText: freshData.randomQ.question,
+      missingYouText: freshData.randomM,
+    });
+    setStep('LANDING');
+  };
 
   // Human-readable labels for the inspection pipeline steps
   const stepsTimeline = [
@@ -87,7 +224,12 @@ export default function App() {
       <main className="flex-1 flex items-center justify-center py-4" id="app-main-stage">
         <div className="w-full animate-fade-in" key={step} id="active-step-view-wrapper">
           {step === 'LANDING' && (
-            <InspectionDashboard onStartScan={() => setStep('SCANNING')} />
+            <InspectionDashboard 
+              report={report} 
+              setReport={setReport}
+              dailyQuestion={initData.randomQ}
+              onStartScan={() => setStep('SCANNING')} 
+            />
           )}
           {step === 'SCANNING' && (
             <CutenessScanner onScanComplete={() => setStep('QUIZ')} />
@@ -96,13 +238,21 @@ export default function App() {
             <LoveQuiz onQuizAnswer={() => setStep('ALERT')} />
           )}
           {step === 'ALERT' && (
-            <EmergencyAlert onProceed={() => setStep('GAME')} />
+            <EmergencyAlert 
+              missingYouText={report.missingYouText}
+              onProceed={() => setStep('GAME')} 
+            />
           )}
           {step === 'GAME' && (
-            <HeartGame onGameComplete={() => setStep('FINAL')} />
+            <HeartGame 
+              onGameComplete={() => setStep('FINAL')} 
+            />
           )}
           {step === 'FINAL' && (
-            <FinalDiagnosis onRestart={() => setStep('LANDING')} />
+            <FinalDiagnosis 
+              report={report}
+              onRestart={handleRestart} 
+            />
           )}
         </div>
       </main>
